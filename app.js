@@ -33,6 +33,26 @@ app.get("/create", (req, res)=>{
         }
     })
 })
+
+app.get("/:name", (req, res)=>{
+    const result = User.findOne({username: req.params.name});
+        
+    result.then(ans=>{
+        if(!ans){
+            user.save()
+            loggedIn = true;
+            mainA = user;
+            res.send("Nope");
+        }
+        else{
+            
+            loggedIn = true;
+            mainA = ans;
+            console.log(ans)
+            res.send("moment of truth...");
+        }
+    })
+})
     
 
 
