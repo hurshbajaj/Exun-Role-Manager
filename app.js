@@ -13,25 +13,41 @@ let loggedIn = false;
 let mainA = null;
 
 const User = require("./mongo.js")
+
+app.set("view engine", "ejs")
+
+app.use(express.static("static"))
+
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+    res.render("home")
+})
 //create
-app.get("/create", (req, res)=>{
-    const user = new User({
-        username:"Test 01",
-        password:"Test 01"
-    })
-    const result = User.findOne({username: "Test 01"});
+app.get("/sign-up", (req, res)=>{
+    res.render("signUp")
+})
+app.post("/sign-up", (req, res)=>{
+    if(req.body){
         
-    result.then(ans=>{
-        if(!ans){
-            user.save()
-            loggedIn = true;
-            mainA = user;
-            res.send("created (:");
-        }
-        else{
-            res.send("aww (:");
-        }
-    })
+        const user = new User({
+            username:req.body["username"],
+            password:req.body["password"]
+        })
+        const result = User.findOne({username: req.body["username"]});
+            
+        result.then(ans=>{
+            if(!ans){
+                user.save()
+                loggedIn = true;
+                mainA = user;
+                res.send("created (:");
+            }
+            else{
+                res.send("aww (:");
+            }
+        })
+    }
 })
 
 app.get("/:name", (req, res)=>{
@@ -39,9 +55,6 @@ app.get("/:name", (req, res)=>{
         
     result.then(ans=>{
         if(!ans){
-            user.save()
-            loggedIn = true;
-            mainA = user;
             res.send("Nope");
         }
         else{
@@ -59,3 +72,5 @@ app.get("/:name", (req, res)=>{
 //create
 //delete
 //find (others[specific])
+
+

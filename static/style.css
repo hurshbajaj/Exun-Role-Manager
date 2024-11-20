@@ -1,0 +1,68 @@
+body{
+    background-color: #0B2545;
+    padding: 0 30px;
+    padding-top: 100px;
+
+    font-family: Inter;
+}
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    left: 30px;
+}
+.logo{
+    width: 13%;
+}
+.compName{
+    color: #2A62B3;
+    background-color: #134074;
+    padding: 15px 40px;
+    border-radius: 14px;
+
+    font-size: 25px;
+    margin-top: 0px;
+    font-weight: bold;
+}
+.main{
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+    width: 53%;
+}
+button{
+    color: #2A62B3;
+    background-color: #13315C;
+    padding: 20px 80px;
+    border-radius: 14px;
+
+    font-size: 30px;
+    margin-top: -20px;
+    font-weight: bold;
+
+    border: none;
+    width: 350px;
+
+    transition: all 400ms;
+}
+button:hover{
+    cursor: pointer;
+    transform: translateY(-15px);
+}
+.bl{
+    position: fixed;
+    bottom: 20px;
+
+    width: 60%;
+}
+.br{
+    position: fixed;
+
+    bottom: 0;
+    right: 0;
+
+}
