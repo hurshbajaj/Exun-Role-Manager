@@ -2,11 +2,11 @@
 const express = require("express")
 const app = express();
 
+require("dotenv").config();
 
 //mongoose (: <3
 const mongoose = require("mongoose")
-const URI = "mongodb+srv://Monkey:1928Hb..@experiment.pcz8r.mongodb.net/Role-Manager?retryWrites=true&w=majority&appName=Experiment"
-mongoose.connect(URI, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(result=>{app.listen(3000)}).catch(err=>{console.log(err.message)});
 
 let loggedIn = false;
