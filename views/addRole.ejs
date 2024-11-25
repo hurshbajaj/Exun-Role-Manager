@@ -88,7 +88,7 @@
             display: flex;
             width: 90%;
             align-content: center;
-            justify-content: space-between;
+            justify-content: space-around;
             flex-wrap: wrap;
 
         }
@@ -103,7 +103,11 @@
             width: 80px;
             border-radius: 8px;
 
-
+            margin-top: -10px;
+        }
+        .Role:hover{
+            cursor: pointer;
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -157,32 +161,32 @@
 
         });
 
-        /*
+
         //delete
 
-        document.querySelectorAll(".main").forEach(role_ =>{
+        document.querySelectorAll(".Role").forEach(role_ =>{
             role_.addEventListener("click", async function (e) {
 
+                    console.log("huh");
                     let res = await fetch("/add-role", {
                         method: "DELETE",
                         body: JSON.stringify({
-                            roleToDelete: role_
+                            roleToDelete: e.target.innerText
                         }),
                         headers: {"Content-Type": "application/json"}
 
                     })
                     const data = await res.json();
 
-                    if(data.error){
-                        alert(data.error);
-                    }else{
+                    if(data.reload){
                         console.log(data);
-                        location.assign("/add-role")
+                        location.reload();
+                        data.reload = false;
                     }
 
             });
         })
-        */
+
     </script>
 </body>
 </html>

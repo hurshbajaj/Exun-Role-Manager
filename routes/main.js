@@ -19,10 +19,10 @@ router.get("/add-role", middleware.protectedRoute,authController.addRoleGet)
 
 router.post("/add-role", middleware.protectedRoute,authController.addRolePost)
 
-router.delete("/add-role", middleware.protectedRoute,authController.addRoleDelete)
+router.delete("/add-role", middleware.protectedRoute,authController.deleteRole)
 
-router.get("/find-role", middleware.protectedRoute,authController.findRoleGet)
+router.get("/find-role", middleware.forbidden,authController.findRoleGet)
 
-router.post("/find-role", authController.findRolePost)
+router.post("/find-role", middleware.forbidden, authController.findRolePost)
 
 module.exports = router;

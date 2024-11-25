@@ -58,6 +58,10 @@ module.exports.middleware={
             next()
         }
 
+    },
+
+    forbidden: async (req, res, next) =>{
+        res.redirect("/")
     }
 }
 
@@ -125,7 +129,10 @@ module.exports.addRolePost = async (req, res) => {
 
     let userMain = await user.findById(res.locals.user._id);
 
-    userMain.roles.push(req.body["role"]);
+    if(!userMain.roles.includes(req.body["role"])){
+        userMain.roles.push(req.body["role"]);
+    }
+
 
     await userMain.save();
 
@@ -146,9 +153,13 @@ module.exports.findRolePost = async (req, res) => {
 }
 
 
-module.exports.addRoleDelete = async (req, res) => {
-    let mainUser = user.findById(res.locals.user._id)
-    mainUser.roles.filter(role => role != req.body.roleToDelete)
+module.exports.deleteRole = async (req, res) => {
 
-    res.json(mainUser.roles)
+    let mainUser = await user.findById(res.locals.user._id)
+
+    mainUser.roles = mainUser.roles.filter(role => role != req.body.roleToDelete)
+    mainUser.save();
+
+    res.json({reload: true})
+
 }
