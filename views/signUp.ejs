@@ -89,13 +89,13 @@
 <body>
     <%- include("./partials/header")%>
 
-    <form class="main" action="/sign-up" method="POST">
+    <form class="main">
         <button class="opt">Sign Up</button>
         <div class="_main">
             <input type="text" placeholder="username" class="one" name="username" required>
             <input type="text" placeholder="password" class="scnd" name="password" required>
 
-            <button class="submit">Submit</button>
+            <button class="submit" type="submit">Submit</button>
         </div>
     </form>
 
@@ -103,5 +103,36 @@
         <img src="Asset02.png" alt="" class="br">
     </div>
 
+    <script>
+        console.log("Hello World");
+        const btn = document.getElementsByClassName("submit")[0];
+
+        document.querySelector(".main").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            console.log("oioi");
+            const username = document.getElementsByClassName("one")[0].value;
+            const password = document.getElementsByClassName("scnd")[0].value;
+
+            let res = await fetch("/sign-up", {
+                method: "POST",
+                body: JSON.stringify({
+                    username,
+                    password
+                }),
+                headers: {"Content-Type": "application/json"}
+
+            })
+            const data = await res.json();
+
+            if(data.error){
+                alert(data.error);
+            }else{
+                console.log(data);
+                location.assign("/add-role")
+            }
+
+        });
+
+    </script>
 </body>
 </html>

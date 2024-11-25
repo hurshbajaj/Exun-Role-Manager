@@ -84,18 +84,43 @@
         .scnd{
             margin-top: -80px;
         }
+        .rolesC{
+            display: flex;
+            width: 90%;
+            align-content: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+        }
+        .Role{
+            font-size: 15px;
+            color: #10284b;
+
+            background-color: #134074;
+            text-align: center;
+
+            padding: 2%;
+            width: 80px;
+            border-radius: 8px;
+
+
+        }
     </style>
 </head>
 <body>
     <%- include("./partials/header")%>
 
-    <form class="main" action="/add-role" method="POST">
+    <form class="main" >
         <button class="opt">My-Roles</button>
         <div class="_main">
             <input type="text" placeholder="role" class="one" name="role" required>
-            
+            <div class="rolesC">
+                <% user.roles.forEach(role =>{ %>
+                    <p class="Role"><%= role %></p>
+                <% }) %>
+            </div>
 
-            <button class="submit">Submit</button>
+            <button class="submit" type="submit">Submit</button>
         </div>
     </form>
 
@@ -103,5 +128,60 @@
         <img src="Asset02.png" alt="" class="br">
     </div>
 
+    <script>
+        console.log("Hello World");
+        const btn = document.getElementsByClassName("submit")[0];
+
+        //post
+        document.querySelector(".main").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            console.log("oioi");
+            const role = document.getElementsByClassName("one")[0].value;
+
+            let res = await fetch("/add-role", {
+                method: "POST",
+                body: JSON.stringify({
+                    role
+                }),
+                headers: {"Content-Type": "application/json"}
+
+            })
+            const data = await res.json();
+
+            if(data.error){
+                alert(data.error);
+            }else{
+                console.log(data);
+                location.assign("/add-role")
+            }
+
+        });
+
+        //delete
+        /*
+        document.querySelectorAll(".main").forEach(role_ =>{
+            role_.addEventListener("click", async function (e) {
+
+                    let res = await fetch("/add-role", {
+                        method: "DELETE",
+                        body: JSON.stringify({
+                            roleToDelete: role_
+                        }),
+                        headers: {"Content-Type": "application/json"}
+
+                    })
+                    const data = await res.json();
+
+                    if(data.error){
+                        alert(data.error);
+                    }else{
+                        console.log(data);
+                        location.assign("/add-role")
+                    }
+
+            });
+        })*/
+
+    </script>
 </body>
 </html>

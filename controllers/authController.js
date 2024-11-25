@@ -12,7 +12,7 @@ const token = (id) => {
 
 const hashPassword = async (password) => {
     const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
+    return await bcrypt.hash(password, salt);
 }
 
 //middleware
@@ -22,9 +22,8 @@ module.exports.middleware={
         if(token__){
             jwt.verify(token__, process.env.secret, (err, decoded) => {
                 if(err){
-                    throw new Error(err.message)
+                    res.json("Error")
                 }
-                
                 next();
             })
         }
@@ -48,6 +47,17 @@ module.exports.middleware={
             res.locals.user = null;
             next()
         }
+    },
+
+    isAuthAlr: async (req, res, next) =>{
+        let token__ = req.cookies.jwt;
+        if(token__){
+            res.redirect("/add-role")
+        }
+        else{
+            next()
+        }
+
     }
 }
 
@@ -62,21 +72,22 @@ module.exports.homeGet = (req, res)=>{
 }
 
 module.exports.signUpPost = async (req, res)=>{
-    const user_ = await new user({
-        username: req.body["username"],
-        password: req.body["password"]
-    })
+
     const possibleFlux = await user.findOne({username: req.body["username"]});
     if(!possibleFlux){
-        hashPassword(req.body["password"])
+        const user_ = await new user({
+            username: req.body["username"],
+            password: req.body["password"]
+        })
+        user_.password = await hashPassword(req.body["password"])
         user_.save()
         const token_ = token(user_._id)
         res.cookie("jwt", token_, {httpOnly: true, maxAge: expiresIn * 1000})
 
-        res.send(user_)
+        res.json(user_)
     }
     else{
-        res.send("already exists /:", possibleFlux)
+        res.json({error: "User Taken"})
     }
 
 
@@ -94,9 +105,15 @@ module.exports.loginPost = async (req, res)=>{
         if(bcrypt.compare(req.body["password"], possibleUser.password)){
             const token_ = token(possibleUser._id)
             res.cookie("jwt", token_, {httpOnly: true, maxAge: expiresIn * 1000})
-            res.send("logged in")
+            res.json(possibleUser)
+        }
+        else{
+            res.json({error: "Incorrect Password"})
         }
 
+    }
+    else{
+        res.json({error: "User Not Found"})
     }
 
 }
@@ -105,17 +122,33 @@ module.exports.addRoleGet = async (req, res) =>{
     res.render('addRole')
 }
 module.exports.addRolePost = async (req, res) => {
-    try {
-        
-        let userMain = await user.findById(res.locals.user._id);
 
-        userMain.roles.push(req.body["role"]);
+    let userMain = await user.findById(res.locals.user._id);
 
-        await userMain.save();
+    userMain.roles.push(req.body["role"]);
 
-        res.send(userMain.roles);
-    } catch (err) {
-        console.error("Error updating roles:", err.message);
-        res.send("An error occurred while updating roles.");
-    }
+    await userMain.save();
+
+    res.json(userMain);
+
 };
+module.exports.findRoleGet = async (req, res) => {
+    res.render("findRole");
+}
+module.exports.findRolePost = async (req, res) => {
+    const findUser = await user.findOne({username: req.body["user"]})
+    if(findUser){
+        res.json(findUser.roles)
+    }
+    else{
+        res.json({error: "User Not Found"})
+    }
+}
+
+
+module.exports.addRoleDelete = async (req, res) => {
+    let mainUser = user.findById(res.locals.user._id)
+    mainUser.roles.filter(role => role != req.body.roleToDelete)
+
+    res.json(mainUser.roles)
+}
